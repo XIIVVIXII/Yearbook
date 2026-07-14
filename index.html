@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+ <meta name="viewport" content="width=device-width,initial-scale=1">
+ <title>Yearbook 2026</title>
+ <style>
+body { 
+ margin: 0; font-family: 'Segoe UI', sans-serif; 
+ background: #140202; transition: background 1s ease;
+ display: flex; justify-content: center; align-items: center; 
+ height: 100vh; overflow: hidden; 
+ }
+
+ #book { width: 350px; height: 500px; perspective: 1500px; position: relative; cursor: pointer; }
+ 
+ .page { 
+ position: absolute; width: 100%; height: 100%; background: #0f0c0c; 
+ border-radius: 10px; box-shadow: 1px 1px 5px rgba(15, 15, 15, 0.3); 
+ border: none; transform-origin: left; transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.8s; 
+ backface-visibility: hidden; display: flex; align-items: center; justify-content: center;
+ overflow: hidden;
+ }
+ 
+ .hidden { transform: rotateY(-180deg); }
+
+ .photo-full { 
+ width: 100%; height: 100%; background-size: cover; background-position: center;
+ transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+ }
+
+ .student-page:hover .photo-full { transform: scale(1.05) rotate(1deg); }
+ .page:not(.hidden) { animation: slideIn 0.8s ease-out; }
+
+ @keyframes slideIn {
+ 0% { opacity: 0; transform: rotateY(-180deg) translateY(20px); }
+ 100% { opacity: 1; transform: rotateY(0deg) translateY(0); }
+ }
+ </style>
+</head>
+<body>
+
+ <div id="book"></div>
+
+ <audio id="bgMusic" loop>
+ <source src="c:\Users\nutam\Downloads\Dark Magic Music - Adfectus Superi.mp3" type="audio/mpeg">
+ </audio>
+
+ <script>
+ const book = document.getElementById('book');
+ const audio = document.getElementById('bgMusic');
+ const pages = [];
+
+ const cover = 'https://i.postimg.cc/02kHxykb/pk.jpg';
+ const studentLinks = [
+ 'https://i.postimg.cc/C5m7dbhf/1.png', 'https://i.postimg.cc/6pjVtK9F/2.png', 'https://i.postimg.cc/MKsfjYhY/3.png',
+ 'https://i.postimg.cc/KYT1whRy/4.png', 'https://i.postimg.cc/SNKJqMJy/5.png', 'https://i.postimg.cc/g2CJvt4K/6.png',
+ 'https://i.postimg.cc/yN0Nnhbd/7.png', 'https://i.postimg.cc/NFjfg3GN/8.png', 'https://i.postimg.cc/1Rv3W3Jh/9.png',
+ 'https://i.postimg.cc/13qR5cPt/10.png', 'https://i.postimg.cc/wv69VCN7/11.png', 'https://i.postimg.cc/WzzTR0X0/12.png',
+ 'https://i.postimg.cc/k4cYQZNq/13.png', 'https://i.postimg.cc/bN2fQy53/14.png', 'https://i.postimg.cc/YSyw6vpH/15.png',
+ 'https://i.postimg.cc/8kMq5KrT/16.png', 'https://i.postimg.cc/7LjWP0HD/17.png', 'https://i.postimg.cc/d3jH9f8D/18.png',
+ 'https://i.postimg.cc/7Z6sgmb7/19.jpg', 'https://i.postimg.cc/d184qfNS/20.png', 'https://i.postimg.cc/rsjj4rkf/21.png',
+ 'https://i.postimg.cc/3JL9Jm9w/22.png', 'https://i.postimg.cc/Y0rftCWk/23.png', 'https://i.postimg.cc/6p2VWSyf/24.png',
+ 'https://i.postimg.cc/wMjJS4Cc/25.png', 'https://i.postimg.cc/7L12byDT/26.png', 'https://i.postimg.cc/HnNJFY0P/27.png',
+ 'https://i.postimg.cc/ncs9BmZw/28.jpg', 'https://i.postimg.cc/qRMzRhjb/29.png', 'https://i.postimg.cc/MKjXv8mq/30.png',
+ 'https://i.postimg.cc/Kj1j7XXs/32.png', 'https://i.postimg.cc/dQgrW6Wq/33.png', 'https://i.postimg.cc/PrZZ0Dcc/34.png',
+ 'https://i.postimg.cc/QM6WcJB2/35.png', 'https://i.postimg.cc/MTNMFZm9/36.jpg', 'https://i.postimg.cc/gcL66RYz/37.png'
+ ];
+ const lastPage = 'https://i.postimg.cc/fbmvmGz2/s-dth-ay.jpg';
+
+ function add(imgUrl, className = "") {
+let d = document.createElement('div');
+ d.className = 'page ' + className;
+ d.innerHTML = `<div class="photo-full" style="background-image: url('${imgUrl}');"></div>`;
+ d.onclick = function(e) {
+ // เล่นเพลงเมื่อคลิกครั้งแรก
+ if (audio.paused) { audio.play(); }
+ 
+ const rect = d.getBoundingClientRect();
+ if (e.clientX - rect.left > rect.width / 2) { next(); } else { prev(); }
+ };
+ book.appendChild(d);
+ pages.push(d);
+ }
+
+ add(cover);
+ studentLinks.forEach(link => add(link, 'student-page'));
+ add(lastPage);
+
+ let idx = 0;
+ function render() {
+ pages.forEach((pg, i) => {
+ pg.style.zIndex = pages.length - i;
+pg.classList.toggle('hidden', i < idx);
+ });
+ }
+ function next() { if (idx < pages.length - 1) { idx++; render(); } }
+ function prev() { if (idx > 0) { idx--; render(); } }
+ render();
+</script>
+</body>
+</html>
